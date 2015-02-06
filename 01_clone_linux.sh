@@ -9,8 +9,8 @@ MODULES_TEMP=$PWD/modules/
 git clone https://github.com/raspberrypi/linux.git
 git clone https://github.com/raspberrypi/tools.git
 
-#Clean kernel config
-cd linux
-make mrproper
+#Apply ARM patch
+wget http://xecdesign.com/downloads/linux-qemu/linux-arm.patch
+patch -p1 -d linux/ < linux-arm.patch
 
 exit
