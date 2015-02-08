@@ -8,5 +8,11 @@ MODULES_TEMP=$PWD/modules/
 cd linux
 make mrproper
 
-#Menuconfig
-cp ../config_3.18.5_manual .config
+#uncomment the kernel chosen
+
+#Clean kernel config with manual changes
+#cp ../config_3.18.5_manual .config
+
+#Kernel config from old qemu kernel
+cp ../config_3.10.26_qemu .config
+make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}
