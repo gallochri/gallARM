@@ -3,17 +3,17 @@
 KERNEL_SRC=$PWD/linux/
 TOOLS_SRC=$PWD/tools/
 CCPREFIX=$PWD/tools/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
-mkdir modules
+mkdir -p modules
 MODULES_TEMP=$PWD/modules/
-mkdir KERNEL
+mkdir -p KERNEL
 KERNEL_PATH=$PWD/KERNEL/
 
 ###Clone source###
 while true; do
-	read -p "Clonare il kernel da https://github.com/raspberrypi/linux.git [s/n]?" -n 1 -r
+	read -p -s "Clonare il kernel da https://github.com/raspberrypi/linux.git [s/n]?" -n 1 -r
 	case $REPLY in
 		[YySs]* ) LINUX_GIT=https://github.com/raspberrypi/linux.git; break;;
-		[Nn]* ) echo "";read -p "Inserire URL git:" LINUX_GIT; break;;
+		[Nn]* ) echo "";read -p -s "Aggiornare il kernel nella cartella ./linux [s/n]?" UPDATE_KERNEL; break;;
 		* ) echo -e "\nRispondere si o no.";;
 	esac
 done
@@ -22,7 +22,7 @@ while true; do
 	read -p "Clonare i tools da https://github.com/raspberrypi/tools.git [s/n]?" -n 1 -r
 	case $REPLY in
 		[YySs]* ) TOOLS_GIT=https://github.com/raspberrypi/tools.git; break;;
-		[Nn]* ) echo "";read -p "Inserire URL git:" TOOLS_GIT; break;;
+		[Nn]* ) echo "";read -p -s "Aggiornare gli strumenti nella cartella ./tools [s/n]?" UPDATE_TOOLS; break;;
 		* ) echo -e "\nRispondere si o no.";;
 	esac
 done
@@ -45,8 +45,16 @@ done
 
 ###Esecuzione####
 echo "Cloning...."
-git clone $LINUX_GIT
-git clone $TOOLS_GIT
+
+case $UPDATE_KERNEL in
+	[YySs]* ) cd $KERNEL_SRC; git pull; cd ..; break;;
+	* )	git clone $LINUX_GIT; break;;
+esac
+
+case $UPDATE_TOOLS in
+	[YySs]* ) cd $TOOLS_SRC; git pull; cd ..; break;;
+	* ) git clone $TOOLS_GIT; break;;
+esac
 
 #Apply ARM patch
 wget http://xecdesign.com/downloads/linux-qemu/linux-arm.patch
