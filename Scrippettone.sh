@@ -22,7 +22,7 @@ while true; do
 	read -p "Clonare i tools da https://github.com/raspberrypi/tools.git [s/n]?" -n 1 -r -s
 	case $REPLY in
 		[YySs]* ) TOOLS_GIT=https://github.com/raspberrypi/tools.git; break;;
-		[Nn]* ) echo "";read -p "Aggiornare gli strumenti nella cartella ./tools [s/n]?"-n 1 -r -s UPDATE_TOOLS; break;;
+		[Nn]* ) echo "";read -p "Aggiornare gli strumenti nella cartella ./tools [s/n]?" -n 1 -r -s UPDATE_TOOLS; break;;
 		* ) echo -e "\nRispondere si o no.";;
 	esac
 done
@@ -34,7 +34,7 @@ while true; do
 	echo "1- Configura manualmente"
 	echo "2- config 3.10.26"
 	echo "3- config 3.18.6"
-	read -n 1 -r
+	read -n 1 -r -s
 	case $REPLY in
 		[1]* ) CONFIG=1; break;;
 		[2]* ) CONFIG=2; break;;
