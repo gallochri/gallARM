@@ -10,19 +10,19 @@ KERNEL_PATH=$PWD/KERNEL/
 
 ###Clone source###
 while true; do
-	read -p -s "Clonare il kernel da https://github.com/raspberrypi/linux.git [s/n]?" -n 1 -r
+	read -p "Clonare il kernel da https://github.com/raspberrypi/linux.git [s/n]?" -n 1 -r -s
 	case $REPLY in
 		[YySs]* ) LINUX_GIT=https://github.com/raspberrypi/linux.git; break;;
-		[Nn]* ) echo "";read -p -s "Aggiornare il kernel nella cartella ./linux [s/n]?" UPDATE_KERNEL; break;;
+		[Nn]* ) echo "";read -p "Aggiornare il kernel nella cartella ./linux [s/n]?" -n 1 -r -s UPDATE_KERNEL; break;;
 		* ) echo -e "\nRispondere si o no.";;
 	esac
 done
 echo ""
 while true; do
-	read -p "Clonare i tools da https://github.com/raspberrypi/tools.git [s/n]?" -n 1 -r
+	read -p "Clonare i tools da https://github.com/raspberrypi/tools.git [s/n]?" -n 1 -r -s
 	case $REPLY in
 		[YySs]* ) TOOLS_GIT=https://github.com/raspberrypi/tools.git; break;;
-		[Nn]* ) echo "";read -p -s "Aggiornare gli strumenti nella cartella ./tools [s/n]?" UPDATE_TOOLS; break;;
+		[Nn]* ) echo "";read -p "Aggiornare gli strumenti nella cartella ./tools [s/n]?"-n 1 -r -s UPDATE_TOOLS; break;;
 		* ) echo -e "\nRispondere si o no.";;
 	esac
 done
