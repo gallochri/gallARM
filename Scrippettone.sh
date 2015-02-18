@@ -34,11 +34,13 @@ while true; do
 	echo "1- Configura manualmente"
 	echo "2- config 3.10.26"
 	echo "3- config 3.18.6"
+	echo "4- config 3.18.7"
 	read -n 1 -r -s
 	case $REPLY in
 		[1]* ) CONFIG=1; break;;
 		[2]* ) CONFIG=2; break;;
 		[3]* ) CONFIG=3; break;;
+		[4]* ) CONFIG=4; break;;
 		* ) echo -e "\nErrore.Scegliere una opzione";;
 	esac
 done
@@ -68,6 +70,7 @@ case $CONFIG in
 	[1]* ) make versatile_defconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; make menuconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; break;;
 	[2]* ) cp ../kernel_config/config_3.10.26 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; break;;
 	[3]* ) cp ../kernel_config/config_3.18.6 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; break;;
+	[4]* ) cp ../kernel_config/config_3.18.7 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; break;;
 esac
 
 #Build kernel
@@ -79,7 +82,8 @@ make modules_install ARCH=arm CROSS_COMPILE=${CCPREFIX} INSTALL_MOD_PATH=${MODUL
 echo "Extracting image..."
 cd ../tools/mkimage/ 
 ./imagetool-uncompressed.py ${KERNEL_SRC}/arch/arm/boot/zImage
-cp -r ${KERNEL_SRC}/arch/arm/boot/zImage ${KERNEL_PATH}
-cp -r kernel.img ${KERNEL_PATH}
+VERSION=`date +"%Y%m%d-%H%M"`
+cp -r ${KERNEL_SRC}/arch/arm/boot/zImage ${KERNEL_PATH}/zImage-$VERSION
+cp -r kernel.img ${KERNEL_PATH}/kernel-$VERSION.img
 
 echo "The End"
