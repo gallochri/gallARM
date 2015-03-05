@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #Set enviroment
 KERNEL_SRC=$PWD/linux/
 TOOLS_SRC=$PWD/tools/
@@ -49,13 +49,13 @@ done
 echo "Cloning...."
 
 case $UPDATE_KERNEL in
-	[YySs]* ) cd $KERNEL_SRC; git pull; cd ..; break;;
-	* )	git clone $LINUX_GIT; break;;
+	[YySs]* ) cd $KERNEL_SRC; git pull; cd ..;;
+	* )	git clone $LINUX_GIT;;
 esac
 
 case $UPDATE_TOOLS in
-	[YySs]* ) cd $TOOLS_SRC; git pull; cd ..; break;;
-	* ) git clone $TOOLS_GIT; break;;
+	[YySs]* ) cd $TOOLS_SRC; git pull; cd ..;;
+	* ) git clone $TOOLS_GIT;;
 esac
 
 #Apply ARM patch
@@ -67,10 +67,10 @@ echo "Config..."
 cd linux
 make mrproper
 case $CONFIG in
-	[1]* ) make versatile_defconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; make menuconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; break;;
-	[2]* ) cp ../kernel_config/config_3.10.26 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; break;;
-	[3]* ) cp ../kernel_config/config_3.18.6 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; break;;
-	[4]* ) cp ../kernel_config/config_3.18.7 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; break;;
+	[1]* ) make versatile_defconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; make menuconfig ARCH=arm CROSS_COMPILE=${CCPREFIX};;
+	[2]* ) cp ../kernel_config/config_3.10.26 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX};;
+	[3]* ) cp ../kernel_config/config_3.18.6 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX};;
+	[4]* ) cp ../kernel_config/config_3.18.7 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX};;
 esac
 
 #Build kernel
