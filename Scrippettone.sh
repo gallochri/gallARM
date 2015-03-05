@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #Set enviroment
 KERNEL_SRC=$PWD/linux/
 TOOLS_SRC=$PWD/tools/
@@ -49,13 +49,13 @@ done
 echo "Cloning...."
 
 case $UPDATE_KERNEL in
-	[YySs]* ) cd $KERNEL_SRC; git pull; cd ..; break;;
-	* )	git clone $LINUX_GIT; break;;
+	[YySs]* ) cd $KERNEL_SRC; git pull; cd ..;;
+	* )	git clone $LINUX_GIT;;
 esac
 
 case $UPDATE_TOOLS in
-	[YySs]* ) cd $TOOLS_SRC; git pull; cd ..; break;;
-	* ) git clone $TOOLS_GIT; break;;
+	[YySs]* ) cd $TOOLS_SRC; git pull; cd ..;;
+	* ) git clone $TOOLS_GIT;;
 esac
 
 #Apply ARM patch
