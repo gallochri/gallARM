@@ -1,5 +1,8 @@
 #!/bin/bash
 #Set enviroment
+cd ~
+mkdir -p RKQ/build
+cd build
 KERNEL_SRC=$PWD/linux/
 TOOLS_SRC=$PWD/tools/
 CCPREFIX=$PWD/tools/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
@@ -59,7 +62,7 @@ case $UPDATE_TOOLS in
 esac
 
 #Apply ARM patch
-wget http://xecdesign.com/downloads/linux-qemu/linux-arm.patch
+cp ../linux-arm.patch ./linux-arm.patch
 patch -p1 -d linux/ < linux-arm.patch
 
 #Kernel config
