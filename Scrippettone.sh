@@ -1,14 +1,14 @@
 #!/bin/bash
-#Set enviroment
-cd ~
-mkdir -p RKQ/build
+mkdir -p build/KERNEL
+mkdir -p modules
+
 cd build
+
+#Set enviroment
 KERNEL_SRC=$PWD/linux/
 TOOLS_SRC=$PWD/tools/
 CCPREFIX=$PWD/tools/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
-mkdir -p modules
 MODULES_TEMP=$PWD/modules/
-mkdir -p KERNEL
 KERNEL_PATH=$PWD/KERNEL/
 
 ###Clone source###
@@ -35,9 +35,9 @@ echo ""
 while true; do
 	echo "Scegliere il file .config:"
 	echo "1- Configura manualmente"
-	echo "2- config 3.10.26"
-	echo "3- config 3.18.6"
-	echo "4- config 3.18.7"
+	echo "2- NON PREMERE"
+	echo "3- NON PREMERE"
+	echo "4- NON PREMERE"
 	read -n 1 -r -s
 	case $REPLY in
 		[1]* ) CONFIG=1; break;;
@@ -70,23 +70,71 @@ echo "Config..."
 cd linux
 make mrproper
 case $CONFIG in
-	[1]* ) make versatile_defconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}; make menuconfig ARCH=arm CROSS_COMPILE=${CCPREFIX};;
-	[2]* ) cp ../kernel_config/config_3.10.26 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX};;
-	[3]* ) cp ../kernel_config/config_3.18.6 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX};;
-	[4]* ) cp ../kernel_config/config_3.18.7 ${KERNEL_SRC}/.config; make oldconfig ARCH=arm CROSS_COMPILE=${CCPREFIX};;
+	[1]* ) make versatile_defconfig ARCH=arm CROSS_COMPILE=${CCPREFIX};break;;
+	[2]* ) echo "SEI UNA MERDA, NON PREMERE 2!";break;;
+	[3]* ) echo "SEI UNA MERDA, NON PREMERE 3!";break;;
+	[4]* ) echo "SEI UNA MERDA, NON PREMERE 4!";break;;
 esac
+
+cat >> .config << EOF
+CONFIG_CROSS_COMPILE="$TOOLCHAIN"
+CONFIG_CPU_V6=y
+CONFIG_ARM_ERRATA_411920=y
+CONFIG_ARM_ERRATA_364296=y
+CONFIG_AEABI=y
+CONFIG_OABI_COMPAT=y
+CONFIG_PCI=y
+CONFIG_SCSI=y
+CONFIG_SCSI_SYM53C8XX_2=y
+CONFIG_BLK_DEV_SD=y
+CONFIG_BLK_DEV_SR=y
+CONFIG_DEVTMPFS=y
+CONFIG_DEVTMPFS_MOUNT=y
+CONFIG_TMPFS=y
+CONFIG_INPUT_EVDEV=y
+CONFIG_EXT3_FS=y
+CONFIG_EXT4_FS=y
+CONFIG_VFAT_FS=y
+CONFIG_NLS_CODEPAGE_437=y
+CONFIG_NLS_ISO8859_1=y
+CONFIG_FONT_8x16=y
+CONFIG_LOGO=y
+CONFIG_VFP=y
+CONFIG_CGROUPS=y
+
+CONFIG_MMC_BCM2835=y
+CONFIG_MMC_BCM2835_DMA=y
+CONFIG_DMADEVICES=y
+CONFIG_DMA_BCM2708=y
+
+CONFIG_FHANDLE=y
+
+CONFIG_OVERLAY_FS=y
+
+CONFIG_EXT4_FS_POSIX_ACL=y
+CONFIG_EXT4_FS_SECURITY=y
+CONFIG_FS_POSIX_ACL=y
+
+CONFIG_IKCONFIG=y
+CONFIG_IKCONFIG_PROC=y
+EOF
+
+cat ../../config_ip_tables >> .config
+
+make menuconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}
 
 #Build kernel
 echo "Building..."
-make ARCH=arm CROSS_COMPILE=${CCPREFIX}
-make modules_install ARCH=arm CROSS_COMPILE=${CCPREFIX} INSTALL_MOD_PATH=${MODULES_TEMP}
+make -j8 ARCH=arm CROSS_COMPILE=${CCPREFIX}
+make -j8 modules_install ARCH=arm CROSS_COMPILE=${CCPREFIX} INSTALL_MOD_PATH=${MODULES_TEMP}
 
 #Extract kernel image
 echo "Extracting image..."
 cd ../tools/mkimage/ 
 ./imagetool-uncompressed.py ${KERNEL_SRC}/arch/arm/boot/zImage
 VERSION=`date +"%Y%m%d-%H%M"`
-cp -r ${KERNEL_SRC}/arch/arm/boot/zImage ${KERNEL_PATH}/zImage-$VERSION
 cp -r kernel.img ${KERNEL_PATH}/kernel-$VERSION.img
+cd ../../
+cp -r ${KERNEL_SRC}/arch/arm/boot/zImage ${KERNEL_PATH}/zImage-$VERSION
 
 echo "The End"
