@@ -1,6 +1,6 @@
 #!/bin/bash
 mkdir -p build/KERNEL
-mkdir -p modules
+mkdir -p build/modules
 
 cd build
 
@@ -30,25 +30,6 @@ while true; do
 	esac
 done
 
-###Choose .config###
-echo ""
-while true; do
-	echo "Scegliere il file .config:"
-	echo "1- Configura manualmente"
-	echo "2- NON PREMERE"
-	echo "3- NON PREMERE"
-	echo "4- NON PREMERE"
-	read -n 1 -r -s
-	case $REPLY in
-		[1]* ) CONFIG=1; break;;
-		[2]* ) CONFIG=2; break;;
-		[3]* ) CONFIG=3; break;;
-		[4]* ) CONFIG=4; break;;
-		* ) echo -e "\nErrore.Scegliere una opzione";;
-	esac
-done
-
-###Esecuzione####
 echo "Cloning...."
 
 case $UPDATE_KERNEL in
@@ -61,23 +42,19 @@ case $UPDATE_TOOLS in
 	* ) git clone $TOOLS_GIT;;
 esac
 
+
 #Apply ARM patch
 cp ../linux-arm.patch ./linux-arm.patch
+cp ../config_ip_tables ./config_ip_tables
 patch -p1 -d linux/ < linux-arm.patch
 
 #Kernel config
 echo "Config..."
 cd linux
 make mrproper
-case $CONFIG in
-	[1]* ) make versatile_defconfig ARCH=arm CROSS_COMPILE=${CCPREFIX};break;;
-	[2]* ) echo "SEI UNA MERDA, NON PREMERE 2!";break;;
-	[3]* ) echo "SEI UNA MERDA, NON PREMERE 3!";break;;
-	[4]* ) echo "SEI UNA MERDA, NON PREMERE 4!";break;;
-esac
+make versatile_defconfig ARCH=arm CROSS_COMPILE=${CCPREFIX}
 
 cat >> .config << EOF
-CONFIG_CROSS_COMPILE="$TOOLCHAIN"
 CONFIG_CPU_V6=y
 CONFIG_ARM_ERRATA_411920=y
 CONFIG_ARM_ERRATA_364296=y
